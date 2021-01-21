@@ -1,0 +1,127 @@
+using System;
+using NLog.Web;
+using System.IO;
+using System.Linq;
+
+namespace BlogsConsole
+{
+    class Program
+    {
+        // create static instance of Logger
+        private static NLog.Logger logger = NLogBuilder.ConfigureNLog(Directory.GetCurrentDirectory() + "\\nlog.config").GetCurrentClassLogger();
+        static void Main(string[] args)
+        {
+            logger.Info("Program started");
+
+            try
+            {
+
+                // // Create and save a new Blog
+                // Console.Write("Enter a name for a new Blog: ");
+                // var name = Console.ReadLine();
+
+                // var blog = new Blog { Name = name };
+
+                // var db = new BloggingContext();
+                // db.AddBlog(blog);
+                // logger.Info("Blog added - {name}", name);
+
+                // // Display all Blogs from the database
+                // var query = db.Blogs.OrderBy(b => b.Name);
+
+                // Console.WriteLine("All blogs in the database:");
+                // foreach (var item in query)
+                // {
+                //     Console.WriteLine(item.Name);
+                // }
+
+                DateTime stupid = new DateTime(2016, 12, 31, 5, 10, 20);
+                Console.WriteLine(stupid);
+                Console.WriteLine(stupid.Ticks);
+                DateTime dumb = new DateTime(stupid.Ticks + 1000000000000);
+                Console.WriteLine(dumb);
+                Console.WriteLine(dumb.Ticks);
+                
+                Console.WriteLine("new:");
+                Console.WriteLine(getRandomTime(stupid));
+
+                //How long is a day? 864000000000 ticks
+                DateTime notsmart = new DateTime(2016, 12, 30, 5, 10, 20);
+                Console.WriteLine(stupid.Ticks - notsmart.Ticks);
+                
+
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex.Message);
+            }
+
+            logger.Info("Program ended");
+        }
+        static readonly Random rnd = new Random();
+        static DateTime getRandomTime(DateTime start){
+            // if(start.Ticks > finish.Ticks){
+            //     long timeLong = LongRandom(start.Ticks, finish.Ticks, rnd);
+            //     DateTime time = new DateTime(timeLong);
+            //     return time;
+            // }
+            // else{
+            //     logger.Error("finish before start");
+            //     logger.Error("I think that " + start + " comes after " + finish + " but what the hell do I know");
+            //     logger.Info("Swapping start and finish to complete generation");
+            //     return getRandomTime(finish, start);
+            // }
+            long timeLong = LongRandom(start.Ticks, (start.Ticks +864000000000) , rnd);
+            DateTime time = new DateTime(timeLong);
+            return time;
+
+        }
+        static long LongRandom(long min, long max, Random rand) { //Yeah, I totally found this long generator online. Hope you don't mind
+            byte[] buf = new byte[8];
+            rand.NextBytes(buf);
+            long longRand = BitConverter.ToInt64(buf, 0);
+
+            return (Math.Abs(longRand % (max - min)) + min);
+        }
+    }
+}
+
+
+
+-----------------
+
+//Lets check to see if any dates will be out of bounds
+                int successes = 0;
+                for( int x = 9999; x>=0; x--){
+                    DateTime start = new DateTime(2016, 12, 30, 5, 10, 20);
+                    DateTime newDate = getRandomTime(start);
+                    DateTime end = new DateTime(2016, 12, 31, 5, 10, 20);
+                    if(newDate.Ticks > end.Ticks){
+                        logger.Error("new date:" + newDate + "| start:" + start + "| end: " + end);
+                    }
+                    else{
+                        successes++;
+                    }
+                }
+                logger.Info(successes + " dates successfully generated");
+
+
+                old old program.cs stuff:
+                // // Create and save a new Blog
+                // Console.Write("Enter a name for a new Blog: ");
+                // var name = Console.ReadLine();
+
+                // var blog = new Blog { Name = name };
+
+                // var db = new BloggingContext();
+                // db.AddBlog(blog);
+                // logger.Info("Blog added - {name}", name);
+
+                // // Display all Blogs from the database
+                // var query = db.Blogs.OrderBy(b => b.Name);
+
+                // Console.WriteLine("All blogs in the database:");
+                // foreach (var item in query)
+                // {
+                //     Console.WriteLine(item.Name);
+                // }
